@@ -13,161 +13,91 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg: #ffffff;
-  --bg2: #f5f5f4;
-  --bg3: #eeece8;
-  --text: #1a1a1a;
-  --text2: #6b7280;
-  --text3: #9ca3af;
-  --border: rgba(0,0,0,0.1);
-  --border2: rgba(0,0,0,0.2);
-  --green: #0f6e56;
-  --green-bg: #eaf3de;
-  --amber: #ba7517;
-  --amber-bg: #faeeda;
-  --red: #a32d2d;
-  --red-bg: #fcebeb;
-  --blue: #185fa5;
-  --blue-bg: #e6f1fb;
-  --accent: #1a1a1a;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --bg:#ffffff;--bg2:#f5f5f4;--bg3:#eeece8;--text:#1a1a1a;--text2:#6b7280;--text3:#9ca3af;
+  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.2);
+  --green:#0f6e56;--green-bg:#eaf3de;--amber:#ba7517;--amber-bg:#faeeda;
+  --red:#a32d2d;--red-bg:#fcebeb;--blue:#185fa5;--blue-bg:#e6f1fb;
+  --accent:#1a1a1a;--radius:12px;--radius-sm:8px;--safe-bottom:env(safe-area-inset-bottom,0px);
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1c1c1e;
-    --bg2: #2c2c2e;
-    --bg3: #3a3a3c;
-    --text: #f2f2f7;
-    --text2: #aeaeb2;
-    --text3: #636366;
-    --border: rgba(255,255,255,0.1);
-    --border2: rgba(255,255,255,0.2);
-    --green: #30d158;
-    --green-bg: #0a2e1a;
-    --amber: #ffd60a;
-    --amber-bg: #2a2200;
-    --red: #ff453a;
-    --red-bg: #2a0a0a;
-    --blue: #0a84ff;
-    --blue-bg: #001a3a;
-    --accent: #f2f2f7;
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1c1c1e;--bg2:#2c2c2e;--bg3:#3a3a3c;--text:#f2f2f7;--text2:#aeaeb2;--text3:#636366;
+    --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+    --green:#30d158;--green-bg:#0a2e1a;--amber:#ffd60a;--amber-bg:#2a2200;
+    --red:#ff453a;--red-bg:#2a0a0a;--blue:#0a84ff;--blue-bg:#001a3a;--accent:#f2f2f7;
   }
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
-
-/* LAYOUT */
-#app { display: flex; flex-direction: column; height: 100%; height: 100dvh; }
-#content { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 16px 16px calc(16px + var(--safe-bottom)); }
-#content::-webkit-scrollbar { display: none; }
-
-/* BOTTOM NAV */
-#nav { display: flex; background: var(--bg); border-top: 0.5px solid var(--border); padding-bottom: var(--safe-bottom); flex-shrink: 0; }
-.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; border: none; background: none; color: var(--text3); cursor: pointer; gap: 3px; font-size: 10px; transition: color 0.15s; min-height: 56px; }
-.nav-btn.active { color: var(--accent); }
-.nav-btn i { font-size: 22px; }
-
-/* HEADER */
-.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; }
-.page-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
-
-/* CARDS */
-.card { background: var(--bg2); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
-.card-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
-
-/* METRICS */
-.mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-.met { background: var(--bg2); border-radius: var(--radius-sm); padding: 14px; }
-.met-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
-.met-val { font-size: 20px; font-weight: 600; }
-.met-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
-.c-green { color: var(--green); }
-.c-amber { color: var(--amber); }
-.c-red { color: var(--red); }
-
-/* FORM ROWS */
-.frow { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
-.frow:last-child { border-bottom: none; }
-.frow label { font-size: 14px; color: var(--text); flex: 1; min-width: 0; }
-.frow input[type=number], .frow input[type=text], .frow input[type=date], .frow input[type=month], .frow input[type=time] {
-  background: var(--bg3); border: none; border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--text); width: 130px; text-align: right; -webkit-appearance: none; appearance: none; outline: none;
-}
-.frow .unit { font-size: 12px; color: var(--text3); white-space: nowrap; }
-
-/* EXPENSE ITEMS */
-.xitem { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
-.xitem:last-child { border-bottom: none; }
-.xitem input[type=text] { flex: 1; background: var(--bg3); border: none; border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--text); outline: none; min-width: 0; }
-.xitem input[type=number] { background: var(--bg3); border: none; border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--text); width: 100px; text-align: right; outline: none; -webkit-appearance: none; }
-.del-btn { width: 32px; height: 32px; border: none; background: var(--red-bg); color: var(--red); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
-
-/* ENTRY ROWS */
-.entry-item { padding: 10px 0; border-bottom: 0.5px solid var(--border); }
-.entry-item:last-child { border-bottom: none; }
-.entry-row1 { display: flex; gap: 8px; margin-bottom: 6px; }
-.entry-row2 { display: flex; gap: 8px; }
-.entry-item input, .entry-item select {
-  background: var(--bg3); border: none; border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--text); outline: none; -webkit-appearance: none; appearance: none;
-}
-.entry-item input[type=time] { width: 90px; }
-.entry-item input[type=text] { flex: 1; min-width: 0; }
-.entry-item select { flex: 1; min-width: 0; }
-.entry-item input[type=number] { width: 100px; text-align: right; }
-
-/* BUTTONS */
-.add-btn { width: 100%; background: none; border: 1.5px dashed var(--border2); border-radius: var(--radius-sm); padding: 12px; font-size: 14px; color: var(--text2); cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.add-btn:active { background: var(--bg2); }
-.action-btn { width: 100%; background: var(--accent); color: var(--bg); border: none; border-radius: var(--radius-sm); padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; }
-.action-btn:active { opacity: 0.8; }
-
-/* BADGE */
-.badge { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 99px; font-weight: 600; }
-.b-green { background: var(--green-bg); color: var(--green); }
-.b-amber { background: var(--amber-bg); color: var(--amber); }
-.b-red { background: var(--red-bg); color: var(--red); }
-.b-blue { background: var(--blue-bg); color: var(--blue); }
-
-/* PROGRESS */
-.prog-wrap { background: var(--bg3); border-radius: 99px; height: 8px; overflow: hidden; margin: 6px 0; }
-.prog-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
-
-/* TIP BOX */
-.tip { border-left: 3px solid; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 14px; font-size: 13px; margin-bottom: 8px; line-height: 1.6; }
-.tip-g { background: var(--green-bg); border-color: var(--green); color: var(--green); }
-.tip-a { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
-.tip-b { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
-
-/* HEALTH ROW */
-.hrow { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
-.hrow:last-child { border-bottom: none; }
-
-/* DAY ROW */
-.drow { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
-.drow:last-child { border-bottom: none; }
-.drow-detail { padding: 4px 0 10px; border-bottom: 0.5px solid var(--border); }
-.drow-detail-item { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); padding: 3px 0; }
-
-/* DATE SELECTOR */
-.date-selector { display: flex; align-items: center; justify-content: space-between; background: var(--bg2); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 12px; }
-.date-nav { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 20px; padding: 4px 8px; }
-.date-display { font-size: 15px; font-weight: 600; }
-
-/* CHART */
-.chart-wrap { position: relative; width: 100%; height: 200px; }
-
-/* SECTION SHOW/HIDE */
-.sec { display: none; }
-.sec.active { display: block; }
-
-/* MONTH PICKER */
-.month-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.month-row input[type=month] { background: var(--bg2); border: none; border-radius: var(--radius-sm); padding: 10px 12px; font-size: 14px; color: var(--text); outline: none; flex: 1; }
-
-/* SECTION DIVIDER */
-.sdiv { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin: 16px 0 8px; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px}
+#app{display:flex;flex-direction:column;height:100%;height:100dvh}
+#content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:16px 16px calc(16px + var(--safe-bottom))}
+#content::-webkit-scrollbar{display:none}
+#nav{display:flex;background:var(--bg);border-top:0.5px solid var(--border);padding-bottom:var(--safe-bottom);flex-shrink:0}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;border:none;background:none;color:var(--text3);cursor:pointer;gap:3px;font-size:10px;transition:color 0.15s;min-height:56px}
+.nav-btn.active{color:var(--accent)}
+.nav-btn i{font-size:22px}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.page-title{font-size:22px;font-weight:600;letter-spacing:-0.5px}
+.page-sub{font-size:13px;color:var(--text2);margin-top:2px}
+.card{background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.card-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.met{background:var(--bg2);border-radius:var(--radius-sm);padding:14px}
+.met-label{font-size:12px;color:var(--text2);margin-bottom:4px}
+.met-val{font-size:19px;font-weight:600}
+.met-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.c-green{color:var(--green)}.c-amber{color:var(--amber)}.c-red{color:var(--red)}
+.frow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.frow:last-child{border-bottom:none}
+.frow label{font-size:14px;color:var(--text);flex:1;min-width:0}
+.frow input[type=number],.frow input[type=text],.frow input[type=date],.frow input[type=month],.frow input[type=time],.frow select{
+  background:var(--bg3);border:none;border-radius:8px;padding:8px 10px;font-size:14px;color:var(--text);-webkit-appearance:none;appearance:none;outline:none}
+.frow input[type=number],.frow input[type=text],.frow input[type=date],.frow input[type=month]{width:130px;text-align:right}
+.frow select{width:130px}
+.frow .unit{font-size:12px;color:var(--text3);white-space:nowrap}
+.xitem{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.xitem:last-child{border-bottom:none}
+.xitem input[type=text]{flex:1;background:var(--bg3);border:none;border-radius:8px;padding:8px 10px;font-size:14px;color:var(--text);outline:none;min-width:0}
+.xitem input[type=number]{background:var(--bg3);border:none;border-radius:8px;padding:8px 10px;font-size:14px;color:var(--text);width:90px;text-align:right;outline:none;-webkit-appearance:none}
+.xitem select{background:var(--bg3);border:none;border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text);outline:none;-webkit-appearance:none;width:90px}
+.del-btn{width:32px;height:32px;border:none;background:var(--red-bg);color:var(--red);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.entry-item{padding:10px 0;border-bottom:0.5px solid var(--border)}
+.entry-item:last-child{border-bottom:none}
+.entry-row1{display:flex;gap:8px;margin-bottom:6px}
+.entry-row2{display:flex;gap:8px}
+.entry-item input,.entry-item select{background:var(--bg3);border:none;border-radius:8px;padding:8px 10px;font-size:14px;color:var(--text);outline:none;-webkit-appearance:none;appearance:none}
+.entry-item input[type=time]{width:90px}
+.entry-item input[type=text]{flex:1;min-width:0}
+.entry-item select{flex:1;min-width:0}
+.entry-item input[type=number]{width:100px;text-align:right}
+.add-btn{width:100%;background:none;border:1.5px dashed var(--border2);border-radius:var(--radius-sm);padding:12px;font-size:14px;color:var(--text2);cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px}
+.add-btn:active{background:var(--bg2)}
+.prog-wrap{background:var(--bg3);border-radius:99px;height:8px;overflow:hidden;margin:6px 0}
+.prog-fill{height:100%;border-radius:99px;transition:width .3s}
+.badge{display:inline-block;font-size:11px;padding:3px 8px;border-radius:99px;font-weight:600}
+.b-green{background:var(--green-bg);color:var(--green)}.b-amber{background:var(--amber-bg);color:var(--amber)}.b-red{background:var(--red-bg);color:var(--red)}.b-blue{background:var(--blue-bg);color:var(--blue)}
+.tip{border-left:3px solid;border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:10px 14px;font-size:13px;margin-bottom:8px;line-height:1.6}
+.tip-g{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.tip-a{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
+.tip-b{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+.hrow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:13px}
+.hrow:last-child{border-bottom:none}
+.drow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:0.5px solid var(--border);cursor:pointer}
+.drow:last-child{border-bottom:none}
+.drow-detail{padding:4px 0 10px;border-bottom:0.5px solid var(--border)}
+.drow-detail-item{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:3px 0}
+.date-selector{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px}
+.date-nav{background:none;border:none;color:var(--text2);cursor:pointer;font-size:20px;padding:4px 8px}
+.date-display{font-size:15px;font-weight:600;text-align:center}
+.chart-wrap{position:relative;width:100%;height:200px}
+.sec{display:none}.sec.active{display:block}
+/* TYPE TOGGLE in var expense */
+.type-toggle{display:flex;border-radius:6px;overflow:hidden;border:0.5px solid var(--border2)}
+.type-toggle button{flex:1;border:none;padding:5px 8px;font-size:11px;cursor:pointer;background:none;color:var(--text2)}
+.type-toggle button.on{background:var(--accent);color:var(--bg);font-weight:600}
+/* OCCASION BUDGET CARD */
+.occ-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px}
+.occ-item:last-child{border-bottom:none}
 </style>
 </head>
 <body>
@@ -180,19 +110,13 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         <div><div class="page-title">ภาพรวม</div><div class="page-sub" id="ov-date"></div></div>
       </div>
       <div class="mgrid" id="ov-metrics"></div>
-      <div class="card">
-        <div class="card-title">สุขภาพการเงิน</div>
-        <div id="ov-health"></div>
-      </div>
+      <div class="card"><div class="card-title">สุขภาพการเงิน</div><div id="ov-health"></div></div>
       <div class="card">
         <div class="card-title">สัดส่วนการใช้เงิน</div>
-        <div class="chart-wrap"><canvas id="ov-chart" role="img" aria-label="กราฟวงกลมสัดส่วนรายจ่าย">สัดส่วนรายจ่าย</canvas></div>
+        <div class="chart-wrap"><canvas id="ov-chart" role="img" aria-label="สัดส่วนค่าใช้จ่าย">สัดส่วน</canvas></div>
         <div id="ov-legend" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-size:12px;color:var(--text2)"></div>
       </div>
-      <div class="card">
-        <div class="card-title">วันนี้</div>
-        <div id="ov-today"></div>
-      </div>
+      <div class="card"><div class="card-title">วันนี้</div><div id="ov-today"></div></div>
     </div>
 
     <!-- INCOME -->
@@ -210,7 +134,11 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         <button class="add-btn" onclick="addExp('fixed')"><i class="ti ti-plus"></i> เพิ่มรายการ</button>
       </div>
       <div class="card">
-        <div class="card-title">ค่าใช้จ่ายผันแปร (งบประมาณ/เดือน)</div>
+        <div class="card-title">ค่าใช้จ่ายผันแปร — เลือกประเภท</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.6">
+          <span class="badge b-green">รายวัน</span> = คำนวณงบต่อวัน (เช่น อาหาร, กาแฟ) &nbsp;
+          <span class="badge b-blue">ครั้งคราว</span> = แสดงยอดคงเหลือ (เช่น น้ำมัน, ตัดผม)
+        </div>
         <div id="var-list"></div>
         <button class="add-btn" onclick="addExp('var')"><i class="ti ti-plus"></i> เพิ่มรายการ</button>
       </div>
@@ -219,18 +147,28 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
 
     <!-- DAILY -->
     <div id="sec-daily" class="sec">
-      <div class="page-header">
-        <div><div class="page-title">บันทึกรายวัน</div></div>
-      </div>
+      <div class="page-header"><div class="page-title">บันทึกรายวัน</div></div>
       <div class="date-selector">
         <button class="date-nav" onclick="changeDate(-1)"><i class="ti ti-chevron-left"></i></button>
-        <div>
+        <div style="text-align:center">
           <div class="date-display" id="sel-date-label"></div>
-          <input type="date" id="sel-date" style="position:absolute;opacity:0;width:0;height:0" onchange="onDateChange()">
+          <div style="font-size:11px;color:var(--text3);margin-top:2px" id="sel-date-sub"></div>
         </div>
         <button class="date-nav" onclick="changeDate(1)"><i class="ti ti-chevron-right"></i></button>
       </div>
-      <div class="mgrid" id="daily-top"></div>
+
+      <!-- DAILY BUDGET (รายวัน type only) -->
+      <div class="card" id="daily-budget-card">
+        <div class="card-title">งบรายวัน <span class="badge b-green">จากหมวดรายวัน</span></div>
+        <div id="daily-budget-rows"></div>
+      </div>
+
+      <!-- OCCASIONAL BUDGET -->
+      <div class="card" id="occ-budget-card">
+        <div class="card-title">งบครั้งคราวเดือนนี้ <span class="badge b-blue">คงเหลือ</span></div>
+        <div id="occ-budget-rows"></div>
+      </div>
+
       <div class="card">
         <div class="card-title">รายการวันนี้</div>
         <div id="entry-list"></div>
@@ -238,7 +176,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       </div>
       <div id="daily-tips"></div>
       <div class="card">
-        <div class="card-title">รายวันเดือนนี้</div>
+        <div class="card-title">รายวันเดือนนี้ (หมวดรายวัน)</div>
         <div class="chart-wrap"><canvas id="daily-chart" role="img" aria-label="กราฟรายวัน">ค่าใช้จ่ายรายวัน</canvas></div>
         <div style="display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--text2)">
           <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD"></span>ใช้จริง</span>
@@ -270,10 +208,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
         <div id="goals-list"></div>
         <button class="add-btn" onclick="addGoal()"><i class="ti ti-plus"></i> เพิ่มเป้าหมาย</button>
       </div>
-      <div class="card">
-        <div class="card-title">ความคืบหน้า</div>
-        <div id="goal-progress"></div>
-      </div>
+      <div class="card"><div class="card-title">ความคืบหน้า</div><div id="goal-progress"></div></div>
     </div>
 
     <!-- RETIRE -->
@@ -292,7 +227,7 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       <div id="ret-tips"></div>
       <div class="card">
         <div class="card-title">เส้นทางสู่เกษียณ</div>
-        <div class="chart-wrap" style="height:220px"><canvas id="ret-chart" role="img" aria-label="กราฟเกษียณ">กราฟเส้นทางเกษียณ</canvas></div>
+        <div class="chart-wrap" style="height:220px"><canvas id="ret-chart" role="img" aria-label="กราฟเกษียณ">กราฟเกษียณ</canvas></div>
         <div style="display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--text2)">
           <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD"></span>สะสมคาดการณ์</span>
           <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;background:#D85A30;display:inline-block"></span>เป้าหมาย</span>
@@ -300,9 +235,8 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
       </div>
     </div>
 
-  </div><!-- end content -->
+  </div>
 
-  <!-- BOTTOM NAV -->
   <nav id="nav">
     <button class="nav-btn active" onclick="sw('overview',this)"><i class="ti ti-chart-pie"></i><span>ภาพรวม</span></button>
     <button class="nav-btn" onclick="sw('income',this)"><i class="ti ti-wallet"></i><span>รายรับ-จ่าย</span></button>
@@ -313,82 +247,65 @@ html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMa
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────
+// ─── STATE ────────────────────────────────────────────────
 let fixedExp = [
   {name:'ค่าเช่า / ผ่อนบ้าน',amount:8000},
   {name:'ค่าผ่อนรถ',amount:4000},
   {name:'ประกันชีวิต',amount:1500},
   {name:'ค่าโทรศัพท์ / internet',amount:700},
 ];
+// varExp now has a "type" field: "daily" or "occasional"
 let varExp = [
-  {name:'อาหาร-เครื่องดื่ม',amount:6000},
-  {name:'เดินทาง',amount:2500},
-  {name:'บันเทิง',amount:2000},
-  {name:'ของใช้ส่วนตัว',amount:1500},
-  {name:'อื่นๆ',amount:1000},
+  {name:'อาหาร-เครื่องดื่ม',amount:6000,type:'daily'},
+  {name:'กาแฟ / ของว่าง',amount:1500,type:'daily'},
+  {name:'น้ำมันรถ',amount:2500,type:'occasional'},
+  {name:'บันเทิง',amount:2000,type:'occasional'},
+  {name:'ของใช้ส่วนตัว',amount:1500,type:'occasional'},
 ];
-let goals = [
-  {name:'กองทุนฉุกเฉิน',target:200000,saved:50000},
-  {name:'ดาวน์บ้าน',target:500000,saved:80000},
-];
-let entries = [];
-let openDay = null;
-let selDate = todayStr();
-let ovChart, dayChart, retChart2;
+let goals=[{name:'กองทุนฉุกเฉิน',target:200000,saved:50000},{name:'ดาวน์บ้าน',target:500000,saved:80000}];
+let entries=[];
+let openDay=null;
+let selDate=todayStr();
+let ovChart,dayChart,retChart2;
 
-// ─── UTILS ───────────────────────────────────────────────
-function todayStr(){ return new Date().toISOString().slice(0,10); }
-function nowTime(){ return new Date().toTimeString().slice(0,5); }
-function fmt(n){ return Math.round(n).toLocaleString('th-TH'); }
-function gv(id){ return parseFloat(document.getElementById(id)?.value)||0; }
-function daysInMonth(ym){
-  const [y,m]=ym.split('-').map(Number); return new Date(y,m,0).getDate();
-}
-function curMonth(){ return selDate.slice(0,7); }
+// ─── UTILS ────────────────────────────────────────────────
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function nowTime(){return new Date().toTimeString().slice(0,5);}
+function fmt(n){return Math.round(n).toLocaleString('th-TH');}
+function gv(id){return parseFloat(document.getElementById(id)?.value)||0;}
+function daysInMonth(ym){const[y,m]=ym.split('-').map(Number);return new Date(y,m,0).getDate();}
+function curMonth(){return selDate.slice(0,7);}
 function thaiDate(d){
-  const [y,m,dd]=d.split('-');
+  const[y,m,dd]=d.split('-');
   const months=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
   return `${parseInt(dd)} ${months[parseInt(m)-1]} ${parseInt(y)+543}`;
 }
 
-// ─── PERSIST ─────────────────────────────────────────────
+// ─── PERSIST ──────────────────────────────────────────────
 function save(){
-  const data = {
-    fixedExp, varExp, goals, entries,
-    salary: document.getElementById('salary')?.value,
-    extra: document.getElementById('extra')?.value,
-    passive: document.getElementById('passive')?.value,
-    sEmerg: document.getElementById('s-emerg')?.value,
-    sFund: document.getElementById('s-fund')?.value,
-    sStock: document.getElementById('s-stock')?.value,
-    sPvd: document.getElementById('s-pvd')?.value,
-    sRate: document.getElementById('s-rate')?.value,
-    rAge: document.getElementById('r-age')?.value,
-    rRet: document.getElementById('r-ret')?.value,
-    rLife: document.getElementById('r-life')?.value,
-    rExp: document.getElementById('r-exp')?.value,
-    rAsset: document.getElementById('r-asset')?.value,
-    rInf: document.getElementById('r-inf')?.value,
-  };
-  try{ localStorage.setItem('financeApp', JSON.stringify(data)); }catch(e){}
+  const data={fixedExp,varExp,goals,entries,
+    salary:document.getElementById('salary')?.value,extra:document.getElementById('extra')?.value,passive:document.getElementById('passive')?.value,
+    sEmerg:document.getElementById('s-emerg')?.value,sFund:document.getElementById('s-fund')?.value,sStock:document.getElementById('s-stock')?.value,sPvd:document.getElementById('s-pvd')?.value,sRate:document.getElementById('s-rate')?.value,
+    rAge:document.getElementById('r-age')?.value,rRet:document.getElementById('r-ret')?.value,rLife:document.getElementById('r-life')?.value,rExp:document.getElementById('r-exp')?.value,rAsset:document.getElementById('r-asset')?.value,rInf:document.getElementById('r-inf')?.value};
+  try{localStorage.setItem('financeApp2',JSON.stringify(data));}catch(e){}
 }
 function load(){
   try{
-    const raw = localStorage.getItem('financeApp');
-    if(!raw) return;
-    const d = JSON.parse(raw);
-    if(d.fixedExp) fixedExp = d.fixedExp;
-    if(d.varExp) varExp = d.varExp;
-    if(d.goals) goals = d.goals;
-    if(d.entries) entries = d.entries;
-    const fields = ['salary','extra','passive','s-emerg','s-fund','s-stock','s-pvd','s-rate','r-age','r-ret','r-life','r-exp','r-asset','r-inf'];
-    const keys = ['salary','extra','passive','sEmerg','sFund','sStock','sPvd','sRate','rAge','rRet','rLife','rExp','rAsset','rInf'];
-    fields.forEach((f,i)=>{ const el=document.getElementById(f); if(el&&d[keys[i]]) el.value=d[keys[i]]; });
+    const raw=localStorage.getItem('financeApp2')||localStorage.getItem('financeApp');
+    if(!raw)return;
+    const d=JSON.parse(raw);
+    if(d.fixedExp)fixedExp=d.fixedExp;
+    if(d.varExp)varExp=d.varExp.map(e=>({...e,type:e.type||'daily'}));
+    if(d.goals)goals=d.goals;
+    if(d.entries)entries=d.entries;
+    const fields=['salary','extra','passive','s-emerg','s-fund','s-stock','s-pvd','s-rate','r-age','r-ret','r-life','r-exp','r-asset','r-inf'];
+    const keys=['salary','extra','passive','sEmerg','sFund','sStock','sPvd','sRate','rAge','rRet','rLife','rExp','rAsset','rInf'];
+    fields.forEach((f,i)=>{const el=document.getElementById(f);if(el&&d[keys[i]])el.value=d[keys[i]];});
   }catch(e){}
 }
 
-// ─── NAV ─────────────────────────────────────────────────
-function sw(id, btn){
+// ─── NAV ──────────────────────────────────────────────────
+function sw(id,btn){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('sec-'+id).classList.add('active');
@@ -397,32 +314,39 @@ function sw(id, btn){
   recalc();
 }
 
-// ─── RENDER EXPENSES ─────────────────────────────────────
+// ─── RENDER FIXED ─────────────────────────────────────────
 function renderFixed(){
-  document.getElementById('fixed-list').innerHTML = fixedExp.map((e,i)=>`
+  document.getElementById('fixed-list').innerHTML=fixedExp.map((e,i)=>`
     <div class="xitem">
       <input type="text" value="${e.name}" oninput="fixedExp[${i}].name=this.value;save();recalc()">
       <input type="number" value="${e.amount}" oninput="fixedExp[${i}].amount=+this.value;save();recalc()">
       <button class="del-btn" onclick="fixedExp.splice(${i},1);renderFixed();save();recalc()" aria-label="ลบ"><i class="ti ti-x"></i></button>
     </div>`).join('');
 }
+
+// ─── RENDER VAR (with type toggle) ────────────────────────
 function renderVar(){
-  document.getElementById('var-list').innerHTML = varExp.map((e,i)=>`
+  document.getElementById('var-list').innerHTML=varExp.map((e,i)=>`
     <div class="xitem">
-      <input type="text" value="${e.name}" oninput="varExp[${i}].name=this.value;save();recalc()">
+      <input type="text" value="${e.name}" oninput="varExp[${i}].name=this.value;save();recalc()" style="flex:1">
       <input type="number" value="${e.amount}" oninput="varExp[${i}].amount=+this.value;save();recalc()">
+      <div class="type-toggle">
+        <button class="${e.type==='daily'?'on':''}" onclick="varExp[${i}].type='daily';renderVar();save();recalc()">วัน</button>
+        <button class="${e.type==='occasional'?'on':''}" onclick="varExp[${i}].type='occasional';renderVar();save();recalc()">ครั้ง</button>
+      </div>
       <button class="del-btn" onclick="varExp.splice(${i},1);renderVar();save();recalc()" aria-label="ลบ"><i class="ti ti-x"></i></button>
     </div>`).join('');
 }
+
 function addExp(t){
   if(t==='fixed'){fixedExp.push({name:'รายการใหม่',amount:0});renderFixed();}
-  else{varExp.push({name:'รายการใหม่',amount:0});renderVar();}
-  save(); recalc();
+  else{varExp.push({name:'รายการใหม่',amount:0,type:'daily'});renderVar();}
+  save();recalc();
 }
 
-// ─── RENDER GOALS ────────────────────────────────────────
+// ─── RENDER GOALS ─────────────────────────────────────────
 function renderGoals(){
-  document.getElementById('goals-list').innerHTML = goals.map((g,i)=>`
+  document.getElementById('goals-list').innerHTML=goals.map((g,i)=>`
     <div style="display:grid;grid-template-columns:1fr 100px 100px 32px;gap:6px;align-items:center;margin-bottom:8px">
       <input type="text" value="${g.name}" oninput="goals[${i}].name=this.value;save();recalc()" style="background:var(--bg3);border:none;border-radius:8px;padding:8px 10px;font-size:14px;color:var(--text);outline:none">
       <input type="number" value="${g.target}" oninput="goals[${i}].target=+this.value;save();recalc()" style="background:var(--bg3);border:none;border-radius:8px;padding:8px 10px;font-size:14px;color:var(--text);outline:none;text-align:right;-webkit-appearance:none">
@@ -430,30 +354,24 @@ function renderGoals(){
       <button class="del-btn" onclick="goals.splice(${i},1);renderGoals();save();recalc()" aria-label="ลบ"><i class="ti ti-x"></i></button>
     </div>`).join('');
 }
-function addGoal(){ goals.push({name:'เป้าหมายใหม่',target:100000,saved:0}); renderGoals(); save(); recalc(); }
+function addGoal(){goals.push({name:'เป้าหมายใหม่',target:100000,saved:0});renderGoals();save();recalc();}
 
-// ─── DATE NAV ────────────────────────────────────────────
-function changeDate(d){
-  const dt = new Date(selDate); dt.setDate(dt.getDate()+d);
-  selDate = dt.toISOString().slice(0,10);
-  updateDateLabel(); renderEntries(); recalc();
-}
-function onDateChange(){
-  selDate = document.getElementById('sel-date').value || todayStr();
-  updateDateLabel(); renderEntries(); recalc();
-}
+// ─── DATE ─────────────────────────────────────────────────
+function changeDate(d){const dt=new Date(selDate);dt.setDate(dt.getDate()+d);selDate=dt.toISOString().slice(0,10);updateDateLabel();renderEntries();recalc();}
 function updateDateLabel(){
-  const lbl = document.getElementById('sel-date-label');
-  if(lbl) lbl.textContent = selDate===todayStr()?'วันนี้ — '+thaiDate(selDate):thaiDate(selDate);
+  const lbl=document.getElementById('sel-date-label');
+  const sub=document.getElementById('sel-date-sub');
+  if(lbl)lbl.textContent=selDate===todayStr()?'วันนี้':thaiDate(selDate);
+  if(sub)sub.textContent=selDate===todayStr()?thaiDate(selDate):'';
 }
 
-// ─── RENDER ENTRIES ──────────────────────────────────────
+// ─── RENDER ENTRIES ───────────────────────────────────────
 function renderEntries(){
-  const todayEntries = entries.filter(e=>e.date===selDate);
-  const cats = varExp.map(e=>e.name);
-  document.getElementById('entry-list').innerHTML = todayEntries.length
-    ? todayEntries.map((e,globalI)=>{
-        const gi = entries.indexOf(e);
+  const cats=varExp.map(e=>e.name);
+  const selEntries=entries.filter(e=>e.date===selDate);
+  document.getElementById('entry-list').innerHTML=selEntries.length
+    ?selEntries.map(e=>{
+        const gi=entries.indexOf(e);
         return `<div class="entry-item">
           <div class="entry-row1">
             <input type="time" value="${e.time}" oninput="entries[${gi}].time=this.value;save()">
@@ -462,56 +380,64 @@ function renderEntries(){
           </div>
           <div class="entry-row2">
             <select oninput="entries[${gi}].cat=this.value;save()">${cats.map(c=>`<option${c===e.cat?' selected':''}>${c}</option>`).join('')}</select>
-            <input type="number" value="${e.amount}" placeholder="บาท" oninput="entries[${gi}].amount=+this.value;save();recalc()" style="text-align:right">
+            <input type="number" value="${e.amount}" placeholder="฿" oninput="entries[${gi}].amount=+this.value;save();recalc()" style="text-align:right">
           </div>
         </div>`;}).join('')
-    : '<div style="font-size:14px;color:var(--text3);padding:12px 0;text-align:center">ยังไม่มีรายการ — กด + เพิ่มได้เลย</div>';
+    :'<div style="font-size:14px;color:var(--text3);padding:12px 0;text-align:center">ยังไม่มีรายการ — กด + เพิ่มได้เลย</div>';
 }
 function addEntry(){
   entries.push({time:nowTime(),note:'',cat:varExp[0]?.name||'อื่นๆ',amount:0,date:selDate});
-  renderEntries(); save(); recalc();
+  renderEntries();save();recalc();
 }
 
-// ─── MAIN RECALC ─────────────────────────────────────────
+// ─── MAIN RECALC ──────────────────────────────────────────
 function recalc(){
-  const totalInc = gv('salary')+gv('extra')+gv('passive');
-  const totalFixed = fixedExp.reduce((s,e)=>s+(+e.amount||0),0);
-  const totalVar = varExp.reduce((s,e)=>s+(+e.amount||0),0);
-  const totalSave = gv('s-emerg')+gv('s-fund')+gv('s-stock')+gv('s-pvd');
-  const totalOut = totalFixed+totalVar+totalSave;
-  const leftover = totalInc-totalOut;
-  const saveRate = totalInc>0?totalSave/totalInc*100:0;
-  const expRatio = totalInc>0?(totalFixed+totalVar)/totalInc*100:0;
+  const totalInc=gv('salary')+gv('extra')+gv('passive');
+  const totalFixed=fixedExp.reduce((s,e)=>s+(+e.amount||0),0);
+  const totalVar=varExp.reduce((s,e)=>s+(+e.amount||0),0);
+  const totalSave=gv('s-emerg')+gv('s-fund')+gv('s-stock')+gv('s-pvd');
+  const leftover=totalInc-totalFixed-totalVar-totalSave;
+  const saveRate=totalInc>0?totalSave/totalInc*100:0;
+  const expRatio=totalInc>0?(totalFixed+totalVar)/totalInc*100:0;
 
-  const today = todayStr();
-  const cm = curMonth();
-  const [yr,mo] = cm.split('-').map(Number);
-  const dimCur = daysInMonth(cm);
-  const dayOfMon = parseInt(today.slice(8));
-  const budgetPerDay = totalVar>0?(totalFixed+totalVar)/dimCur:0;
+  // Split var into daily vs occasional
+  const dailyVars=varExp.filter(e=>e.type==='daily');
+  const occVars=varExp.filter(e=>e.type==='occasional');
+  const totalDailyBudget=dailyVars.reduce((s,e)=>s+(+e.amount||0),0);
+  const totalOccBudget=occVars.reduce((s,e)=>s+(+e.amount||0),0);
 
-  const selEntries = entries.filter(e=>e.date===selDate);
-  const selTotal = selEntries.reduce((s,e)=>s+(+e.amount||0),0);
-  const monthEntries = entries.filter(e=>e.date&&e.date.startsWith(cm));
-  const monthTotal = monthEntries.reduce((s,e)=>s+(+e.amount||0),0);
-  const budgetSoFar = budgetPerDay*dayOfMon;
-  const daysLeft = dimCur-dayOfMon;
-  const budgetLeft = (totalFixed+totalVar)-monthTotal;
-  const budgetLeftPerDay = daysLeft>0?budgetLeft/daysLeft:0;
+  const cm=curMonth();
+  const dim=daysInMonth(cm);
+  const dayOfMon=parseInt(todayStr().slice(8));
+  const daysLeft=dim-dayOfMon;
+
+  // Per-day budget from daily vars only
+  const budgetPerDay=dim>0?totalDailyBudget/dim:0;
+
+  const selEntries=entries.filter(e=>e.date===selDate);
+  const selTotal=selEntries.reduce((s,e)=>s+(+e.amount||0),0);
+  const monthEntries=entries.filter(e=>e.date&&e.date.startsWith(cm));
+  const monthTotal=monthEntries.reduce((s,e)=>s+(+e.amount||0),0);
+
+  // Daily entries only (cat matches daily var names)
+  const dailyCatNames=new Set(dailyVars.map(e=>e.name));
+  const occCatNames=new Set(occVars.map(e=>e.name));
+  const selDailyTotal=selEntries.filter(e=>dailyCatNames.has(e.cat)).reduce((s,e)=>s+(+e.amount||0),0);
+  const monthDailyTotal=monthEntries.filter(e=>dailyCatNames.has(e.cat)).reduce((s,e)=>s+(+e.amount||0),0);
+  const monthOccTotal=monthEntries.filter(e=>occCatNames.has(e.cat)).reduce((s,e)=>s+(+e.amount||0),0);
 
   // ── OVERVIEW ──
-  const od = document.getElementById('ov-date');
-  if(od) od.textContent = thaiDate(today);
-
-  const om = document.getElementById('ov-metrics');
-  if(om) om.innerHTML=`
+  const od=document.getElementById('ov-date');
+  if(od)od.textContent=thaiDate(todayStr());
+  const om=document.getElementById('ov-metrics');
+  if(om)om.innerHTML=`
     <div class="met"><div class="met-label">รายได้/เดือน</div><div class="met-val">฿${fmt(totalInc)}</div><div class="met-sub">฿${fmt(totalInc/30)}/วัน</div></div>
     <div class="met"><div class="met-label">ค่าใช้จ่าย</div><div class="met-val ${expRatio>80?'c-red':expRatio>65?'c-amber':''}">฿${fmt(totalFixed+totalVar)}</div><div class="met-sub">${Math.round(expRatio)}%</div></div>
     <div class="met"><div class="met-label">ออม-ลงทุน</div><div class="met-val ${saveRate>=20?'c-green':saveRate>=10?'c-amber':'c-red'}">฿${fmt(totalSave)}</div><div class="met-sub">${Math.round(saveRate)}%</div></div>
     <div class="met"><div class="met-label">คงเหลือ</div><div class="met-val ${leftover>=0?'c-green':'c-red'}">฿${fmt(leftover)}</div><div class="met-sub">${leftover>=0?'เพียงพอ':'รายจ่ายเกิน!'}</div></div>`;
 
-  const oh = document.getElementById('ov-health');
-  if(oh) oh.innerHTML=[
+  const oh=document.getElementById('ov-health');
+  if(oh)oh.innerHTML=[
     {l:'อัตราออมเงิน (≥20%)',v:`${Math.round(saveRate)}%`,ok:saveRate>=20,w:saveRate>=10},
     {l:'ค่าใช้จ่าย (<70%)',v:`${Math.round(expRatio)}%`,ok:expRatio<70,w:expRatio<80},
     {l:'ออมฉุกเฉิน',v:`฿${fmt(gv('s-emerg'))}/เดือน`,ok:gv('s-emerg')>0,w:true},
@@ -522,54 +448,96 @@ function recalc(){
   const allItems=[...fixedExp.map(e=>({name:e.name,amount:+e.amount})),...varExp.map(e=>({name:e.name,amount:+e.amount})),{name:'ออม-ลงทุน',amount:totalSave},...(leftover>0?[{name:'คงเหลือ',amount:leftover}]:[])].filter(e=>e.amount>0);
   const colors=['#378ADD','#1D9E75','#D85A30','#D4537E','#7F77DD','#639922','#BA7517','#E24B4A','#888780','#5DCAA5'];
   const ol=document.getElementById('ov-legend');
-  if(ol) ol.innerHTML=allItems.map((e,i)=>`<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:${colors[i%colors.length]}"></span>${e.name} ${totalInc>0?Math.round(e.amount/totalInc*100)+'%':''}</span>`).join('');
+  if(ol)ol.innerHTML=allItems.map((e,i)=>`<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:${colors[i%colors.length]}"></span>${e.name} ${totalInc>0?Math.round(e.amount/totalInc*100)+'%':''}</span>`).join('');
   const oc=document.getElementById('ov-chart');
   if(oc){if(ovChart)ovChart.destroy();ovChart=new Chart(oc,{type:'doughnut',data:{labels:allItems.map(e=>e.name),datasets:[{data:allItems.map(e=>e.amount),backgroundColor:colors.slice(0,allItems.length),borderWidth:2,borderColor:'transparent'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});}
 
-  const selOver=selTotal-budgetPerDay;
+  const selOver=selDailyTotal-budgetPerDay;
   const ot=document.getElementById('ov-today');
-  if(ot) ot.innerHTML=`
-    <div class="hrow"><span style="color:var(--text2)">งบต่อวัน</span><span style="font-weight:600">฿${fmt(budgetPerDay)}</span></div>
-    <div class="hrow"><span style="color:var(--text2)">ใช้ไปวันนี้</span><span style="font-weight:600" class="${selTotal<=budgetPerDay?'c-green':selTotal<=budgetPerDay*1.2?'c-amber':'c-red'}">฿${fmt(selTotal)}</span></div>
+  if(ot)ot.innerHTML=`
+    <div class="hrow"><span style="color:var(--text2)">งบรายวัน (อาหาร ฯลฯ)</span><span style="font-weight:600">฿${fmt(budgetPerDay)}</span></div>
+    <div class="hrow"><span style="color:var(--text2)">ใช้ไปวันนี้</span><span style="font-weight:600" class="${selDailyTotal<=budgetPerDay?'c-green':selDailyTotal<=budgetPerDay*1.2?'c-amber':'c-red'}">฿${fmt(selDailyTotal)}</span></div>
     <div class="hrow"><span style="color:var(--text2)">${selOver>0?'เกินงบ':'เหลืองบ'}</span><span style="font-weight:600" class="${selOver>0?'c-red':'c-green'}">${selOver>0?'+':'-'}฿${fmt(Math.abs(selOver))}</span></div>`;
 
   // ── INCOME SUMMARY ──
   const is=document.getElementById('inc-summary');
-  if(is) is.innerHTML=`
+  if(is)is.innerHTML=`
     <div class="met"><div class="met-label">รายได้รวม</div><div class="met-val">฿${fmt(totalInc)}</div></div>
     <div class="met"><div class="met-label">คงที่</div><div class="met-val">฿${fmt(totalFixed)}</div><div class="met-sub">${totalInc>0?Math.round(totalFixed/totalInc*100):0}%</div></div>
     <div class="met"><div class="met-label">ผันแปร</div><div class="met-val">฿${fmt(totalVar)}</div><div class="met-sub">${totalInc>0?Math.round(totalVar/totalInc*100):0}%</div></div>
     <div class="met"><div class="met-label">คงเหลือ</div><div class="met-val ${leftover>=0?'c-green':'c-red'}">฿${fmt(leftover)}</div></div>`;
 
-  // ── DAILY TOP ──
+  // ── DAILY PAGE ──
   updateDateLabel();
-  const dt=document.getElementById('daily-top');
-  if(dt){
-    const proj=dayOfMon>0?monthTotal/dayOfMon*dimCur:0;
-    dt.innerHTML=`
-      <div class="met"><div class="met-label">งบต่อวัน</div><div class="met-val">฿${fmt(budgetPerDay)}</div><div class="met-sub">฿${fmt(totalFixed+totalVar)}/เดือน</div></div>
-      <div class="met"><div class="met-label">วันที่เลือก</div><div class="met-val ${selTotal<=budgetPerDay?'c-green':selTotal<=budgetPerDay*1.2?'c-amber':'c-red'}">฿${fmt(selTotal)}</div><div class="met-sub">${selOver>0?'เกิน ฿'+fmt(selOver):'เหลือ ฿'+fmt(-selOver)}</div></div>
-      <div class="met"><div class="met-label">เดือนนี้</div><div class="met-val ${monthTotal<=budgetSoFar?'c-green':'c-amber'}">฿${fmt(monthTotal)}</div><div class="met-sub">งบถึงวันนี้ ฿${fmt(budgetSoFar)}</div></div>
-      <div class="met"><div class="met-label">งบ/วันที่เหลือ</div><div class="met-val ${budgetLeftPerDay>=budgetPerDay*0.8?'c-green':budgetLeftPerDay>=0?'c-amber':'c-red'}">฿${fmt(Math.max(0,budgetLeftPerDay))}</div><div class="met-sub">เหลือ ${daysLeft} วัน</div></div>`;
+
+  // Daily budget card (per category)
+  const dbr=document.getElementById('daily-budget-rows');
+  if(dbr){
+    if(dailyVars.length===0){
+      dbr.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;padding:8px">ยังไม่มีหมวดรายวัน — ไปตั้งที่ รายรับ-จ่าย</div>';
+    } else {
+      dbr.innerHTML=dailyVars.map(e=>{
+        const dayBudget=(+e.amount||0)/dim;
+        const todaySpent=selEntries.filter(en=>en.cat===e.name).reduce((s,en)=>s+(+en.amount||0),0);
+        const over=todaySpent-dayBudget;
+        const pct=dayBudget>0?Math.min(100,todaySpent/dayBudget*100):0;
+        return `<div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+            <span style="font-weight:500">${e.name}</span>
+            <span style="color:var(--text2)">฿${fmt(todaySpent)} / <span style="color:var(--text)">฿${fmt(dayBudget)}</span>/วัน</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-fill" style="width:${pct}%;background:${pct>=100?'#E24B4A':pct>=80?'#BA7517':'#1D9E75'}"></div></div>
+          <div style="font-size:11px;margin-top:2px;color:${over>0?'var(--red)':'var(--green)'}">
+            ${over>0?`เกิน ฿${fmt(over)}`:`เหลือ ฿${fmt(-over)}`}
+          </div>
+        </div>`;
+      }).join('');
+    }
   }
 
+  // Occasional budget card (monthly remaining)
+  const obr=document.getElementById('occ-budget-rows');
+  if(obr){
+    if(occVars.length===0){
+      obr.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;padding:8px">ยังไม่มีหมวดครั้งคราว</div>';
+    } else {
+      obr.innerHTML=occVars.map(e=>{
+        const monthSpent=monthEntries.filter(en=>en.cat===e.name).reduce((s,en)=>s+(+en.amount||0),0);
+        const remaining=(+e.amount||0)-monthSpent;
+        const pct=(+e.amount||0)>0?Math.min(100,monthSpent/(+e.amount||0)*100):0;
+        return `<div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+            <span style="font-weight:500">${e.name}</span>
+            <span style="color:var(--text2)">ใช้ ฿${fmt(monthSpent)} / ฿${fmt(+e.amount||0)}</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-fill" style="width:${pct}%;background:${pct>=100?'#E24B4A':pct>=80?'#BA7517':'#378ADD'}"></div></div>
+          <div style="font-size:11px;margin-top:2px;color:${remaining<0?'var(--red)':'var(--blue)'}">
+            ${remaining<0?`เกินงบ ฿${fmt(-remaining)}`:`คงเหลือ ฿${fmt(remaining)} เดือนนี้`}
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Tips
   const dtips=document.getElementById('daily-tips');
   if(dtips){
     const tips=[];
-    if(selEntries.length===0) tips.push(`<div class="tip tip-b">ยังไม่มีรายการวันนี้</div>`);
-    else if(selOver>0) tips.push(`<div class="tip tip-a"><strong>เกินงบ ฿${fmt(selOver)}</strong> — ลองประหยัดวันถัดไปเพื่อชดเชย</div>`);
-    else tips.push(`<div class="tip tip-g"><strong>อยู่ในงบ!</strong> เหลือ ฿${fmt(-selOver)}</div>`);
-    if(monthTotal>budgetSoFar*1.1) tips.push(`<div class="tip tip-a">เดือนนี้ใช้เกินแผน ฿${fmt(monthTotal-budgetSoFar)} — ควรลด ฿${fmt(Math.max(0,(monthTotal-budgetSoFar)/Math.max(daysLeft,1)))}/วันที่เหลือ</div>`);
+    const totalSelOver=selDailyTotal-budgetPerDay;
+    if(selEntries.length===0)tips.push(`<div class="tip tip-b">ยังไม่มีรายการวันนี้</div>`);
+    else if(totalSelOver>0)tips.push(`<div class="tip tip-a"><strong>หมวดรายวันเกินงบ ฿${fmt(totalSelOver)}</strong> — ลองประหยัดพรุ่งนี้</div>`);
+    else tips.push(`<div class="tip tip-g"><strong>หมวดรายวันอยู่ในงบ!</strong> เหลือ ฿${fmt(-totalSelOver)}</div>`);
+    if(monthDailyTotal>totalDailyBudget*(dayOfMon/dim)*1.1)tips.push(`<div class="tip tip-a">ยอดรายวันสะสมเดือนนี้เกินแผน — ควรระวัง</div>`);
     dtips.innerHTML=tips.join('');
   }
 
-  // daily chart
+  // Daily chart (daily vars only)
   const dc=document.getElementById('daily-chart');
   if(dc){
     const byDay={};
-    monthEntries.forEach(e=>byDay[e.date]=(byDay[e.date]||0)+(+e.amount||0));
+    monthEntries.filter(e=>dailyCatNames.has(e.cat)).forEach(e=>byDay[e.date]=(byDay[e.date]||0)+(+e.amount||0));
     const labs=[],acts=[],buds=[];
-    for(let d=1;d<=dimCur;d++){
+    for(let d=1;d<=dim;d++){
       const dk=`${cm}-${String(d).padStart(2,'0')}`;
       labs.push(d);acts.push(byDay[dk]||0);buds.push(Math.round(budgetPerDay));
     }
@@ -580,18 +548,22 @@ function recalc(){
     ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},color:'#888',maxTicksLimit:16},grid:{display:false}},y:{ticks:{font:{size:10},color:'#888',callback:v=>'฿'+Math.round(v).toLocaleString()},grid:{color:'rgba(128,128,128,0.1)'}}}}});
   }
 
-  // history
+  // History
   const hl=document.getElementById('history-list');
   if(hl){
     const byDay2={};
-    monthEntries.forEach(e=>{if(!byDay2[e.date])byDay2[e.date]={total:0,items:[]};byDay2[e.date].total+=+e.amount||0;byDay2[e.date].items.push(e);});
+    monthEntries.forEach(e=>{if(!byDay2[e.date])byDay2[e.date]={total:0,daily:0,items:[]};byDay2[e.date].total+=+e.amount||0;if(dailyCatNames.has(e.cat))byDay2[e.date].daily+=+e.amount||0;byDay2[e.date].items.push(e);});
     const sorted=Object.keys(byDay2).sort().reverse();
     hl.innerHTML=sorted.length?sorted.map(d=>{
-      const dv=byDay2[d],ov=dv.total-budgetPerDay,isOpen=openDay===d;
+      const dv=byDay2[d],ov=dv.daily-budgetPerDay,isOpen=openDay===d;
       return `<div>
         <div class="drow" onclick="openDay=openDay==='${d}'?null:'${d}';recalc()">
           <span style="font-weight:500">${thaiDate(d)}</span>
-          <div style="display:flex;align-items:center;gap:8px"><span>฿${fmt(dv.total)}</span><span class="badge ${ov<=0?'b-green':ov<budgetPerDay*0.2?'b-amber':'b-red'}">${ov>0?'+':'-'}฿${fmt(Math.abs(ov))}</span><i class="ti ${isOpen?'ti-chevron-up':'ti-chevron-down'}" style="font-size:14px;color:var(--text3)"></i></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span>฿${fmt(dv.total)}</span>
+            <span class="badge ${ov<=0?'b-green':ov<budgetPerDay*0.2?'b-amber':'b-red'}">${ov>0?'+':'-'}฿${fmt(Math.abs(ov))}</span>
+            <i class="ti ${isOpen?'ti-chevron-up':'ti-chevron-down'}" style="font-size:14px;color:var(--text3)"></i>
+          </div>
         </div>
         ${isOpen?`<div class="drow-detail">${dv.items.map(e=>`<div class="drow-detail-item"><span>${e.time} ${e.note||'—'} <em>(${e.cat})</em></span><span>฿${fmt(e.amount)}</span></div>`).join('')}</div>`:''}
       </div>`;}).join(''):'<div style="font-size:14px;color:var(--text3);padding:12px 0;text-align:center">ยังไม่มีรายการ</div>';
@@ -599,7 +571,7 @@ function recalc(){
 
   // ── SAVING ──
   const gp=document.getElementById('goal-progress');
-  if(gp) gp.innerHTML=goals.length?goals.map(g=>{
+  if(gp)gp.innerHTML=goals.length?goals.map(g=>{
     const pct=g.target>0?Math.min(100,g.saved/g.target*100):0;
     const remain=Math.max(0,g.target-g.saved);
     const mo2=totalSave>0&&remain>0?Math.ceil(remain/totalSave):0;
@@ -621,19 +593,16 @@ function recalc(){
   const projected=fvAsset+fvMonthly;
   const gap=needed-projected;
   const onTrack=gap<=0;
-
   const rm=document.getElementById('ret-metrics');
-  if(rm) rm.innerHTML=`
+  if(rm)rm.innerHTML=`
     <div class="met"><div class="met-label">ปีสู่เกษียณ</div><div class="met-val">${yToRet}</div><div class="met-sub">ปี</div></div>
     <div class="met"><div class="met-label">เงินที่ต้องมี</div><div class="met-val" style="font-size:16px">฿${fmt(needed)}</div><div class="met-sub">รวมเงินเฟ้อ</div></div>
     <div class="met"><div class="met-label">คาดว่าจะมี</div><div class="met-val ${onTrack?'c-green':'c-amber'}" style="font-size:16px">฿${fmt(projected)}</div></div>
     <div class="met"><div class="met-label">${onTrack?'เงินเหลือ':'ขาดอีก'}</div><div class="met-val ${onTrack?'c-green':'c-red'}" style="font-size:16px">฿${fmt(Math.abs(gap))}</div></div>`;
-
   const rt=document.getElementById('ret-tips');
-  if(rt) rt.innerHTML=onTrack
-    ?`<div class="tip tip-g" style="margin-bottom:12px"><strong>เส้นทางดีมาก!</strong> แผนปัจจุบันเพียงพอ หากรักษาวินัยต่อเนื่อง</div>`
+  if(rt)rt.innerHTML=onTrack
+    ?`<div class="tip tip-g" style="margin-bottom:12px"><strong>เส้นทางดีมาก!</strong> แผนปัจจุบันเพียงพอหากรักษาวินัยต่อเนื่อง</div>`
     :`<div class="tip tip-a" style="margin-bottom:12px"><strong>ต้องออมเพิ่ม ฿${fmt(gap/(yToRet*12))}/เดือน</strong> หรือปรับผลตอบแทน / ขยับอายุเกษียณ / ลดค่าใช้จ่ายหลังเกษียณ</div>`;
-
   const rc=document.getElementById('ret-chart');
   if(rc){
     const ages=[],proj2=[],tgt=[];
@@ -653,14 +622,10 @@ function recalc(){
 
 // ─── INIT ─────────────────────────────────────────────────
 load();
-renderFixed(); renderVar(); renderGoals(); renderEntries();
+renderFixed();renderVar();renderGoals();renderEntries();
 updateDateLabel();
 recalc();
-
-// PWA
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 </script>
 </body>
 </html>
